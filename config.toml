@@ -19,8 +19,8 @@ window_timeout  = 10.0
 
 [workflow]
 api_url      = "https://jsonplaceholder.typicode.com/posts"
-post_count   = 10
-output_dir   = "Desktop/"
+post_count   = 2
+output_dir   = "Desktop/tjm-project"
 target_icon  = "Notepad"
 window_title = "Notepad"
 filename_fmt = "post_{id}.txt"
