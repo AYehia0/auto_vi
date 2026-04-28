@@ -7,3 +7,5 @@ dist/
 .env
 screenshots/*.png
 .DS_Store
+.resources/
+uv.lock

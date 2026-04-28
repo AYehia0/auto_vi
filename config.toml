@@ -1,35 +1,33 @@
-# ── Display ──────────────────────────────────────────
 [display]
 width  = 1920
 height = 1080
 
-# ── Logging ─────────────────────────────────────────
 [logging]
-level           = "INFO"                    # DEBUG | INFO | WARNING | ERROR
-screenshots_dir = "screenshots"             # save annotated screenshots here
+level           = "INFO"
+screenshots_dir = "screenshots"
 
-# ── Automation timings ──────────────────────────────
 [automation]
-double_click_interval = 0.1                 # seconds between clicks
-typing_interval       = 0.02                # seconds between keystrokes
-action_delay          = 0.5                 # pause after each action
+double_click_interval = 0.1
+typing_interval       = 0.02
+action_delay          = 0.5
 
-# ── Retry / robustness ─────────────────────────────
 [retry]
 max_attempts    = 3
 delay_seconds   = 1.0
-window_timeout  = 10.0                      # seconds to wait for window
+window_timeout  = 10.0
 
-# ── Notepad workflow ────────────────────────────────
 [workflow]
-api_url         = "https://jsonplaceholder.typicode.com/posts"
-post_count      = 10
-output_dir      = "Desktop/"
-target_icon     = "Notepad"
-window_title    = "Notepad"
-filename_fmt    = "post_{id}.txt"
+api_url      = "https://jsonplaceholder.typicode.com/posts"
+post_count   = 10
+output_dir   = "Desktop/"
+target_icon  = "Notepad"
+window_title = "Notepad"
+filename_fmt = "post_{id}.txt"
 
-# ── Grounding strategies (tried in order, if one failed continue) ───────────
-# Options: "ocr"
 [grounding]
 strategies = ["ocr"]
+
+[grounding.ocr]
+languages      = ["en"]
+confidence_min = 0.3
+icon_offset_y  = 30
