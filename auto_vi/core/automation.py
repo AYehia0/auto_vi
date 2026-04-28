@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import subprocess
 import time
 from typing import Any
 
@@ -12,6 +13,23 @@ log = logging.getLogger(__name__)
 
 pyautogui.FAILSAFE = True
 pyautogui.PAUSE = 0.05
+
+
+def kill_notepad() -> None:
+    """Force-kill all Notepad processes so we start clean."""
+    subprocess.run(
+        ["taskkill", "/F", "/IM", "Notepad.exe"],
+        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+    )
+    time.sleep(0.5)
+    log.info("Killed all Notepad instances")
+
+
+def minimize_all() -> None:
+    """Win+D to show desktop — ensures icons are visible for screenshot."""
+    pyautogui.hotkey("win", "d")
+    time.sleep(1.0)
+    log.info("Minimized all windows (Win+D)")
 
 
 def double_click(x: int, y: int, cfg: dict[str, Any]) -> None:
@@ -26,19 +44,15 @@ def click(x: int, y: int) -> None:
 
 
 def type_text(text: str, cfg: dict[str, Any]) -> None:
-    interval = cfg["automation"]["typing_interval"]
-    if text.isascii():
-        pyautogui.typewrite(text, interval=interval)
+    """Type text. Uses clipboard paste for anything with newlines or non-ASCII."""
+    if text.isascii() and "\n" not in text and "\t" not in text:
+        pyautogui.typewrite(text, interval=cfg["automation"]["typing_interval"])
     else:
-        _type_unicode(text, interval)
+        import pyperclip
+        pyperclip.copy(text)
+        pyautogui.hotkey("ctrl", "v")
+        time.sleep(0.3)
     log.info("Typed %d chars", len(text))
-
-
-def _type_unicode(text: str, interval: float) -> None:
-    import pyperclip
-    pyperclip.copy(text)
-    pyautogui.hotkey("ctrl", "v")
-    time.sleep(interval * len(text))
 
 
 def hotkey(*keys: str) -> None:
