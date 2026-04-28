@@ -11,10 +11,10 @@ from PIL import Image
 log = logging.getLogger(__name__)
 
 
-def take(save_path: str | Path | None = None) -> Image.Image:
+def take(save_path: str | Path | None = None, monitor: int = 1) -> Image.Image:
     with mss.mss() as sct:
-        monitor = sct.monitors[1]
-        shot = sct.grab(monitor)
+        mon = sct.monitors[monitor]
+        shot = sct.grab(mon)
         img = Image.frombytes("RGB", shot.size, shot.bgra, "raw", "BGRX")
 
     if save_path:

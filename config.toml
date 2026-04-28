@@ -1,6 +1,7 @@
 [display]
-width  = 1920
-height = 1080
+monitor = 1        # 0 = all screens, 1 = laptop (1920x1080), 2 = external (2560x1440)
+width   = 1920
+height  = 1080
 
 [logging]
 level           = "INFO"
