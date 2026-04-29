@@ -61,14 +61,18 @@ def hotkey(*keys: str) -> None:
 
 
 def wait_for_window(title: str, timeout: float) -> bool:
+    """Wait for a window whose title contains the exact word (not as substring of another word)."""
+    import re
+    pattern = re.compile(rf"\b{re.escape(title)}\b", re.IGNORECASE)
     deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
         try:
             from pywinauto import Desktop
-            wins = Desktop(backend="uia").windows(title_re=f".*{title}.*")
-            if wins:
-                log.info("Window '%s' found", title)
-                return True
+            for win in Desktop(backend="uia").windows():
+                wt = win.window_text()
+                if pattern.search(wt) and "+" not in wt:
+                    log.info("Window found: '%s'", wt)
+                    return True
         except Exception:
             pass
         time.sleep(0.5)

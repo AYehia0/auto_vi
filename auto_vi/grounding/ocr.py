@@ -23,7 +23,10 @@ def _get_reader(languages: list[str]):
     global _reader
     if _reader is None:
         import easyocr
-        _reader = easyocr.Reader(languages, gpu=False)
+        import torch
+        use_gpu = torch.cuda.is_available()
+        _reader = easyocr.Reader(languages, gpu=use_gpu)
+        log.info("EasyOCR initialized (%s)", "GPU" if use_gpu else "CPU")
     return _reader
 
 
@@ -36,6 +39,10 @@ class OCRStrategy(GroundingStrategy):
         results = reader.readtext(np.array(image))
 
         query_lower = query.lower()
+        log.debug("OCR detected %d text regions:", len(results))
+        for bbox, text, conf in results:
+            log.debug("  '%s' (conf=%.2f)", text.strip(), conf)
+
         for bbox, text, conf in results:
             if text.strip().lower() == query_lower and conf >= ocfg.get("confidence_min", 0.3):
                 cx = int(sum(p[0] for p in bbox) / 4)
