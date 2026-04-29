@@ -85,6 +85,9 @@ def _type_and_save(post: dict, cfg: dict[str, Any]) -> None:
     out_dir = _ensure_output_dir(cfg)
     filepath = str(out_dir / wf["filename_fmt"].format(id=post["id"]))
 
+    if Path(filepath).exists():
+        log.warning("File already exists, will overwrite: %s", filepath)
+
     # Select all + delete to guarantee empty editor (in case Ctrl+N didn't work)
     auto.hotkey("ctrl", "a")
     time.sleep(0.1)
