@@ -9,11 +9,13 @@ from PIL import Image
 
 from auto_vi.grounding.base import GroundingError, GroundingStrategy
 from auto_vi.grounding.ocr import OCRStrategy
+from auto_vi.grounding.template import TemplateStrategy
 
 log = logging.getLogger(__name__)
 
 _STRATEGIES: dict[str, GroundingStrategy] = {
     "ocr": OCRStrategy(),
+    "template": TemplateStrategy(),
 }
 
 
