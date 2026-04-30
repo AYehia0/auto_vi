@@ -34,6 +34,8 @@ def minimize_all() -> None:
 
 def double_click(x: int, y: int, cfg: dict[str, Any]) -> None:
     interval = cfg["automation"]["double_click_interval"]
+    # Clamp to avoid pyautogui corner fail-safe (triggers at 0,0)
+    x, y = max(x, 5), max(y, 5)
     pyautogui.doubleClick(x, y, interval=interval)
     log.info("Double-clicked (%d, %d)", x, y)
 
