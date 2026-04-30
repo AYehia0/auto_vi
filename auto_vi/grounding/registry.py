@@ -19,6 +19,17 @@ _STRATEGIES: dict[str, GroundingStrategy] = {
 }
 
 
+def _get_strategy(name: str) -> GroundingStrategy | None:
+    """Get strategy by name, lazy-loading heavy ones like VLM."""
+    if name in _STRATEGIES:
+        return _STRATEGIES[name]
+    if name == "vlm":
+        from auto_vi.grounding.vlm import VLMStrategy
+        _STRATEGIES["vlm"] = VLMStrategy()
+        return _STRATEGIES["vlm"]
+    return None
+
+
 def register(strategy: GroundingStrategy) -> None:
     _STRATEGIES[strategy.name] = strategy
 
@@ -28,7 +39,7 @@ def locate(image: Image.Image, query: str, cfg: dict[str, Any]) -> tuple[int, in
     strategies = cfg["grounding"]["strategies"]
 
     for name in strategies:
-        strategy = _STRATEGIES.get(name)
+        strategy = _get_strategy(name)
         if not strategy:
             log.warning("Unknown grounding strategy: %s", name)
             continue

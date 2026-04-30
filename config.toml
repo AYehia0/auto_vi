@@ -26,7 +26,7 @@ window_title = "Notepad"
 filename_fmt = "post_{id}.txt"
 
 [grounding]
-strategies = ["template", "ocr"]
+strategies = ["template", "ocr", "vlm"]
 
 [grounding.template]
 confidence_min = 0.7
