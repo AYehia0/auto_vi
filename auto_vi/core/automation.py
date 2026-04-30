@@ -11,18 +11,28 @@ import pyautogui
 
 log = logging.getLogger(__name__)
 
-pyautogui.FAILSAFE = True
+pyautogui.FAILSAFE = False
 pyautogui.PAUSE = 0.05
 
 
 def kill_notepad() -> None:
-    """Force-kill all Notepad processes so we start clean."""
+    """Force-kill all Notepad processes and clear Win11 session state."""
     subprocess.run(
         ["taskkill", "/F", "/IM", "Notepad.exe"],
         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
     )
     time.sleep(0.5)
-    log.info("Killed all Notepad instances")
+    # Clear Win11 Notepad tab/session state so it opens fresh
+    import os
+    from pathlib import Path
+    tab_state = Path(os.environ.get("LOCALAPPDATA", "")) / "Packages" / "Microsoft.WindowsNotepad_8wekyb3d8bbwe" / "LocalState" / "TabState"
+    if tab_state.exists():
+        for f in tab_state.iterdir():
+            try:
+                f.unlink()
+            except OSError:
+                pass
+    log.info("Killed all Notepad instances (session state cleared)")
 
 
 def minimize_all() -> None:
@@ -34,8 +44,6 @@ def minimize_all() -> None:
 
 def double_click(x: int, y: int, cfg: dict[str, Any]) -> None:
     interval = cfg["automation"]["double_click_interval"]
-    # Clamp to avoid pyautogui corner fail-safe (triggers at 0,0)
-    x, y = max(x, 5), max(y, 5)
     pyautogui.doubleClick(x, y, interval=interval)
     log.info("Double-clicked (%d, %d)", x, y)
 

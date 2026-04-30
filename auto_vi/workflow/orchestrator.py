@@ -72,10 +72,11 @@ def _ground_and_launch(cfg: dict[str, Any], attempt: int) -> bool:
     if not auto.wait_for_window(wf["window_title"], retry["window_timeout"]):
         return False
 
-    # 6. Win11 Notepad may restore a previous session — force a blank document
+    # 6. Win11 Notepad session state was already cleared by kill_notepad,
+    #    but dismiss any unexpected popup just in case.
     time.sleep(0.5)
-    auto.hotkey("ctrl", "n")
-    time.sleep(0.5)
+    auto.hotkey("escape")
+    time.sleep(0.3)
 
     return True
 
